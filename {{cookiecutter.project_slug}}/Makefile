@@ -5,7 +5,7 @@ BASE := $(shell /bin/pwd)
 CODE_COVERAGE = 50
 POETRY ?= poetry
 
-build: install test coverage lint
+build: install test coverage lint bandit
 
 install:
 	$(info [*] Installing POETRY project dependencies)
@@ -43,13 +43,16 @@ lint: ## Check code with pyflakes and mypy ( errors ignored)
 	@$(POETRY) 	run pyflakes {{cookiecutter.project_module}}
 	-@$(POETRY) run mypy  {{cookiecutter.project_module}}
 
+bandit: ## Check code with bandit
+	@$(POETRY) 	run bandit -r {{cookiecutter.project_module}}
+
+
 test: ## run tests quickly with the default Python
-	@$(POETRY) run python -m pytest --cov . --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
+	@$(POETRY) run python -m pytest --cov {{cookiecutter.project_module}}/ --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
 
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source {{ cookiecutter.project_module }} -m pytest
-	coverage report -m
 	coverage html
 
 
