@@ -1,5 +1,5 @@
 
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: clean clean-test clean-pyc clean-build docs help bandit lint
 .DEFAULT_GOAL := help
 BASE := $(shell /bin/pwd)
 CODE_COVERAGE = 50
@@ -40,19 +40,19 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 lint: ## Check code with pyflakes and mypy ( errors ignored)
-	@$(POETRY) 	run pyflakes {{cookiecutter.project_module}}
-	-@$(POETRY) run mypy  {{cookiecutter.project_module}}
+	@$(POETRY) 	run pyflakes src/
+	-@$(POETRY) run mypy  src/
 
 bandit: ## Check code with bandit
-	@$(POETRY) 	run bandit -r {{cookiecutter.project_module}}
+	@$(POETRY) 	run bandit -r src/
 
 
 test: ## run tests quickly with the default Python
-	@$(POETRY) run python -m pytest --cov {{cookiecutter.project_module}}/ --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
+	@$(POETRY) run python -m pytest --cov=src --cov-branch --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
 
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source {{ cookiecutter.project_module }} -m pytest
-	coverage html
+	@$(POETRY) run coverage run --source src/ -m pytest
+	@$(POETRY) run coverage html
 
 
