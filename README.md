@@ -2,7 +2,7 @@
 
 - Poetry for dependency management
 - Pytest for unit tests
-- mypy, pyflakes, pytype for linting
+- mypy, ruff for linting
 
 ## Generating Project
 
