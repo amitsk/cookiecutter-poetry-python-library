@@ -1,19 +1,14 @@
 
-.PHONY: clean clean-test clean-pyc clean-build docs help bandit lint
+.PHONY: clean clean-test clean-pyc clean-build docs help
 .DEFAULT_GOAL := help
-BASE := $(shell /bin/pwd)
-CODE_COVERAGE = 50
-POETRY ?= poetry
 
-build: install test coverage lint bandit
+POETRY=poetry
+CODE_COVERAGE=50
+
+build: install test lint
 
 install:
-	$(info [*] Installing POETRY project dependencies)
-	@$(POETRY) install
-	
-
-shell:
-	@$(POETRY) shell
+	$(POETRY) install
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -26,7 +21,7 @@ clean-build: ## remove build artifacts
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
-	find . -name '*.dist-info' -exec rm -fr {} +
+
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
@@ -39,20 +34,24 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: ## Check code with pyflakes and mypy ( errors ignored)
-	@$(POETRY) 	run pyflakes src/
-	-@$(POETRY) run mypy  src/
+mypy:
+	-@$(POETRY) run mypy  src/{{cookiecutter.pkg_name}}
 
-bandit: ## Check code with bandit
-	@$(POETRY) 	run bandit -r src/
+lint: ## Check code with pyflakes and mypy ( errors ignored)
+	@$(POETRY) run ruff src/{{cookiecutter.pkg_name}}
 
 
 test: ## run tests quickly with the default Python
-	@$(POETRY) run python -m pytest --cov=src --cov-branch --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
+	@$(POETRY) run pytest --cov src/{{cookiecutter.pkg_name}} --cov-report term-missing --cov-fail-under $(CODE_COVERAGE)  tests/ -v
 
 
 coverage: ## check code coverage quickly with the default Python
-	@$(POETRY) run coverage run --source src/ -m pytest
-	@$(POETRY) run coverage html
+	coverage run --source src/{{cookiecutter.pkg_name}} -m pytest
+	coverage report -m
+	coverage html
 
+check: check_format lint test
 
+check_format:
+	$(info [*] Running format checkers...)
+	@$(POETRY) run python -m black --check .

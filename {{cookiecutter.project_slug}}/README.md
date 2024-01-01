@@ -1,13 +1,14 @@
-# Simple Python Cookiecutter template
+# {{cookiecutter.project_slug}}
 
-- Poetry for dependency management
-- Pytest for unit tests
-- mypy, pyflakes, pytype for linting
+![Run Tests and Lint](https://github.com/{{cookiecutter.project_slug}}/workflows/Run%20Tests%20and%20Lint/badge.svg)
 
-## Generating Project
+- PDM for dependency management
 
-- Install python3
-- Install [poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer)
-- Install `make`
-- Build runs install, test and lint `make build`
-- Tests `make test`
+
+## Building
+
+- Install Python3.11
+- Install pdm https://pdm.fming.dev/latest/
+- Clone from GitHub
+- Build - Install, test, lint `make build`
+- Tests can be run with `make test`

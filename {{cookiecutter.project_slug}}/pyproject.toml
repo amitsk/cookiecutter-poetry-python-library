@@ -3,24 +3,123 @@ name = "{{cookiecutter.project_slug}}"
 version = "{{cookiecutter.version}}"
 description = "{{cookiecutter.project_description}}"
 authors = ["{{cookiecutter.full_name}} <{{cookiecutter.email}}>"]
-
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-python-dateutil = "^2.8.2"
+python = "^{{cookiecutter.python_version}}"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-pytest-datadir = "^1.3.1"
-pytest-html = "^3.1.1"
-pytest-runner = "^5.3.1"
-pytest-cov = "^3.0.0"
-black = "^21.12b0"
-pytest-mock = "^3.6.1"
-pyflakes = "^2.4.0"
-mypy = "^0.931"
-bandit = "^1.7.2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+pytest = "^7.4.4"
+ruff = "^0.1.9"
+mypy = "^1.8.0"
+pytest-datadir = "^1.5.0"
+pytest-html = "^4.1.1"
+pytest-mock = "^3.12.0"
+pytest-faker = "^2.0.0"
+pytest-print = "^1.0.0"
+pytest-cov = "^4.1.0"
+
+
+
+[tool.ruff]
+# https://beta.ruff.rs/docs/rules/
+select = [
+    "F",   # Pyflakes
+    "E",   # pycodestyle Error
+    "W",   # pycodestyle Warning
+    "C90", # mccabe
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "YTT", # flake8-2020
+    "ANN", # flake8-annotations
+    "S",   # flake8-bandit
+    "BLE", # flake8-blind-except
+    "FBT", # flake8-boolean-trap
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "C40", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T10", # flake8-debugger
+    "EM",  # flake8-errmsg
+    "EXE", # flake8-executable
+    "ISC", # flake8-implicit-str-concat
+    "ICN", # flake8-import-conventions
+    "G",   # flake8-logging-format
+    "INP", # flake8-no-pep420
+    "PIE", # flake8-pie
+    "T20", # flake8-print
+    "PYI", # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",   # flake8-quotes
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+    "TCH", # flake8-type-checking
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "ERA", # eradicate
+    "PGH", # pygrep-hooks
+    "PL",  # Pylint
+    "TRY", # tryceratops
+    "RUF", # Ruff-specific rules
+]
+
+unfixable = ["B"]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "build",
+    "venv",
+    "tests",
+]
+
+# Never enforce line length violations.
+ignore = ["E501"]
+
+# Always generate Python {{ cookiecutter.python_version}} compatible code.
+target-version = "py{{ cookiecutter.python_version.replace('.', '') }}"
+
+# Same as Black.
+line-length = 88
+
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402"]
+"./tests/**" = ["S101"]  # Allow use of assert in tests
+
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+
+[tool.mypy]
+python_version = "{{ cookiecutter.python_version }}"
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+warn_return_any = true
+warn_unreachable = true
+namespace_packages = true
+ignore_missing_imports = true
+mypy_path = "{{ cookiecutter.pkg_name }}"
+
+[mypy-pytest]
+ignore_missing_imports = true
